@@ -1,0 +1,113 @@
+﻿@model FYPProject.Models.ReportViewModel
+
+@{
+    ViewBag.Title = "ReportCampaign";
+}
+<head>
+    <style>
+        .container {
+            width: 100%;
+        }
+
+        .panel {
+            width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24);
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0px 5px 0px 5px;
+            margin: 0;
+        }
+
+        .form-control {
+            display: inline-block;
+            text-align: left;
+            max-width: 300px;
+            font-size: 15px;
+            min-height: 200px;
+            border-radius: 5px;
+            border-color: #e0e0e0;
+            padding-left: 7px;
+            background-color: transparent;
+            color: #777;
+            vertical-align: middle;
+            outline: none;
+        }
+
+        .form-row-header {
+            padding: 10px 5px 0px 5px;
+            font-size: 13px;
+            margin-bottom: -5px;
+        }
+
+        .textbox-header {
+            width: 300px;
+            padding-left: 5px;
+            text-align: left;
+        }
+
+        .cust-camp-btn {
+            width: 50%;
+            outline: none !important;
+            background-color: #296f82;
+            border: 1px solid #1e5361;
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+            .cust-camp-btn:hover {
+                transition: 0.3s;
+                color: white !important;
+                background-color: #26687a;
+                border: 1px solid #1f5563;
+            }
+
+        .textarea-body {
+            line-height: normal;
+            overflow-wrap: break-word;
+        }
+        .dropdowngogo {
+            width: 300px;
+        }
+
+    </style>
+</head>
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ReporterId, new { id = "ReporterId" })
+        @Html.HiddenFor(model => model.Username, new { id = "Username" })
+        @Html.HiddenFor(model => model.CampaignId, new { id = "CampaignId" })
+        <center><h2>Report this Campaign</h2></center>
+                <div class="panel panel-default">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                        <div class="form-row form-row-header">
+                            @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "textbox-header" })
+                        </div>
+                        <div class="form-row">
+                            @Html.DropDownListFor(model => model.Reason, new SelectList(new[] { "Fraudulent Activity", "Stolen Identity", "Suspicious Campaign", "Others" }), "Select a Reason", new { @class = "dropdowngogo" })
+                        </div>
+                        <div class="form-row form-row-header">
+                            @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "textbox-header" })
+                        </div>
+                        <div class="form-row">
+                            @Html.TextAreaFor(model => model.Body, htmlAttributes: new { @class = "form-control", })
+                        </div>
+                        <div class="form-row" style="padding:10px;">
+                            <input type="submit" value="Report" class="btn btn-default cust-camp-btn" />
+                        </div>
+                    </div>
+                </div>
+    }
+</div>
+
+        <div>
+            <br><center>
+                <a href="@Url.Action("ViewCampaign", "Campaign", new { id = Model.CampaignId })">Go Back</a>
+            </center>
+        </div>

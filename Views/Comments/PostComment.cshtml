@@ -1,0 +1,32 @@
+﻿@model FYPProject.Models.CommentViewModel
+
+@using (Html.BeginForm("PostComment", "Comments", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <head>
+        <style>
+            .comment-tb {
+                width: 95%;
+                border-radius: 5px !important;
+            }
+        </style>
+    </head>
+
+    <div class="form-horizontal" style="margin:10px -10px 0px 20px">
+        @Html.HiddenFor(model => model.CampaignId)
+
+        <div class="form-group">
+            @Html.TextAreaFor(model => model.Text, new { @class = "comment-tb form-control", @rows = 3, required = "required", @placeholder = "Leave a comment" })
+            @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        </div>
+
+
+        <div class="form-group">
+
+            <input type="submit" value="Add Comment" class="btn btn-primary campaign-button" style="float:right;margin-right:50px;" />
+
+        </div>
+    </div>
+}

@@ -1,0 +1,23 @@
+﻿@model FYPProject.Models.FollowViewModel
+@{
+    ViewBag.Title = "FollowCampaign";
+}
+@using (Html.BeginForm("FollowCampaign", "Follow", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.CampaignId)
+    @Html.HiddenFor(model => model.Id)
+
+    <button type="submit" id="followBtn" class="btn btn-primary campaign-button sidebar-button">
+        <div class="btn-container">
+            <div class="left-btn-div"><span class="glyphicon glyphicon-bell btn-icon"></span></div>
+            <div class="center-btn-div">
+                <span>Follow</span>
+            </div>
+            <div class="right-btn-div">
+            </div>
+
+        </div>
+    </button>
+
+}

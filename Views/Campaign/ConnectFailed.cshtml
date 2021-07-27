@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "ConnectFailed";
+}
+@{
+    <hr />
+    <div style="color:red;">
+        The Stripe account you are trying to connect to is already connected to another account. Please try again<br />
+        You will be redirected back in 3 seconds...
+    </div>
+}
+
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+        setTimeout(function ()
+        {
+        window.location.replace('@Url.Action("Index", "Home")')
+        }, 3000);
+    </script>
+}
+

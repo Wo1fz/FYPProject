@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "DonationComplete";
+}
+
+<head>
+    <style>
+        #donate-complete-container {
+            width: 65%;
+            padding: 20px 0px 30px 0px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #title-container {
+            padding-left: 20px;
+            padding-bottom: 20px;
+            text-align:center;
+        }
+
+        #donation-body-container {
+        display:flex;
+        width:500px;
+        align-content:center;
+margin:0 auto;
+
+
+        }
+
+        #label-left-container {
+            width:200px;
+            float:left;
+
+        }
+
+        #label-right-container {
+            width: 300px;
+
+        }
+
+        .donation-label {
+        margin:0;
+        margin-left:20px;
+        }
+
+        .sidebar-button-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .campaign-button {
+            background-color: #296f82;
+            border: 1px solid #1e5361;
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+            .campaign-button:hover {
+                transition: 0.3s;
+                color: white !important;
+                background-color: #26687a;
+                border: 1px solid #1f5563;
+            }
+
+        .body-button {
+            width: 25%;
+            padding: 10px 10px 10px 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+
+        .left-btn-div, .right-btn-div {
+            display: flex;
+            width: 20%;
+        }
+
+        .center-btn-div {
+            display: flex;
+            width: 60%;
+            justify-content: center;
+            padding-top: 3px;
+        }
+
+        .btn-icon {
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #153841;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <section id="donate-complete-container">
+
+        <div id="title-container">
+            <h1><b>Thank for you donating!</b></h1>
+        </div>
+        <div id="donation-body-container">
+            <p>
+                We appreciate your help!
+                If you have any questions, please email
+                <a href="mailto:cfshelpticket@gmail.com">cfshelpticket@gmail.com</a>.
+            </p>
+        </div>
+        <div class="sidebar-button-container">
+            <a href="@Url.Action("Index", "Home",null)" class="btn btn-primary campaign-button body-button">
+                <div class="btn-container">
+                    <div class="left-btn-div"><span class="glyphicon glyphicon-home btn-icon"></span></div>
+                    <div class="center-btn-div">
+                        <span>Return home</span>
+                    </div>
+                    <div class="right-btn-div">
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+</body>

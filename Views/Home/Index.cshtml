@@ -1,0 +1,145 @@
+﻿<title>@ViewBag.Title</title>
+<head>
+    <style>
+
+
+        .glyph {
+            text-align:left;
+            color:#777777;
+        }
+
+        #startfr {
+            padding-top:40px;
+            padding-bottom:50px;
+        }
+
+
+
+    </style>
+</head>
+<body class="indexPage">
+    <div class="padding">
+        <div id="myCarousel" class="carousel slide fill carousel-fade" role="listbox" data-ride="carousel" data-interval="5000">
+
+
+            <div id="middle-caption" class="carousel-caption">
+                <h3>Crowdfunding For the Sick</h3>
+                <p>Fundraising for the sick who needs your help</p>
+                @Html.ActionLink("Donate", "CreateCampaign", "Campaign", null, new { @class = "btn btn-default btn-lg", id = "cust-btn" })
+                @Html.ActionLink("Start a Campaign", "CreateCampaign", "Campaign", null, new { @class = "btn btn-default btn-lg", id = "cust-btn" })
+            </div>
+
+
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+
+                <div class="item active">
+                    <img src="~/images/WebResources/banner1.jpg" alt="New York">
+                    <div id="banner-cap" class="carousel-caption">
+                        <p>Part of being a person is helping others</p>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <img src="~/images/WebResources/banner2.jpg" alt="Chicago">
+                    <div id="banner-cap" class="carousel-caption">
+                        <p>Together, we can all make a difference</p>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <img src="~/images/WebResources/banner3.jpg" alt="Los Angeles">
+                    <div id="banner-cap" class="carousel-caption">
+                        <p>In a gentle way, you can shake someone's world</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!-- Container (The Content Section) -->
+        <div id="contentDiv">
+            <div class="container text-center">
+                <h2 style="color:#26687a;"><strong>Our Features</strong></h2>
+                <br>
+                <div span style="padding-bottom:6px;" class="row">
+                    <div class="col-sm-4">
+                        <div class="glyph">
+                            <p span class="glyphicon glyphicon-lock" style="color:#26687a;font-size:17px"><span style="font-size:25px;padding-left:5px;color:#777777"><b>Secure</b></span></p><br>
+                            <p span style="font-size:15px">Our Trust & Safety team works around the clock to protect against fraud.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="glyph">
+                            <p span class="glyphicon glyphicon-user" style="color:#26687a;font-size:17px"><span style="font-size:25px;padding-left:5px;color:#777777"><b>Support</b></span></p><br>
+                            <p span style="font-size:15px">Our best-in-class Customer Happiness agents will answer your questions, day or night.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="glyph">
+                            <p span class="glyphicon glyphicon-thumbs-up" style="color:#26687a;font-size:17px"><span style="font-size:25px;word-spacing:-22px;padding-left:5px;color:#777777"><b>Social Reach</b></span></p><br>
+                            <p span style="font-size:15px">Harness the power of social media to spread your story and get more support.</p>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div span style="padding-bottom:40px;" class="row">
+                    <div class="col-sm-4">
+                        <div class="glyph">
+                            <p span class="glyphicon glyphicon-phone" style="color:#26687a;font-size:17px"><span style="font-size: 25px; word-spacing: -22px;padding-left:5px;color:#777777"><b>Responsive</b></span></p><br>
+                            <p span style="font-size:15px">Access our platform through different devices with ease and comfort.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="glyph">
+                            <p span class="glyphicon glyphicon-heart" style="color:#26687a;font-size:17px"><span style="font-size: 25px; word-spacing: -22px;padding-left:5px;color:#777777"><b>Flexibility</b></span></p><br>
+                            <p span style="font-size:15px">Campaign organisers will be able to receive the donated sum regardless if the goal is reached.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="glyph">
+                            <p span class="glyphicon glyphicon-ok" style="color:#26687a;font-size:17px"><span style="font-size:25px;word-spacing:-22px;padding-left:5px;color:#777777"><b>Simple to use</b></span></p><br>
+                            <p span style="font-size:15px">You can personalise your campaign easily as well as donate and help other campaigns you are interested in.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="startfr" style="background-color:white">
+            <div class="container">
+                <h3 class="text-center">
+                    Ready to start Fundraising?</br></br>
+                    @Html.ActionLink("Start a Campaign", "CreateCampaign", "Campaign", null, new { @class = "btn btn-default btn-lg", id = "cust-btn" })
+                </h3>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('body').css('padding-top', '0px');
+            $("#img_logo").attr("src", "images/WebResources/cfs-logo-light.png");
+        })
+
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 70) {
+                $("#img_logo").attr("src", "images/WebResources/cfs-logo-dark.png");
+            }
+            else {
+                $("#img_logo").attr("src", "images/WebResources/cfs-logo-light.png");
+            }
+        })
+
+
+    </script>
+}

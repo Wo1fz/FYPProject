@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "NoStripeConnected";
+}
+
+@{
+    <hr />
+    <div style="color:red;">
+        You cannot create a campaign as you do not have Stripe connected to your account<br />
+        You will be redirected to connect Stripe in 3 seconds...
+    </div>
+}
+
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+        setTimeout(function ()
+        {
+        window.location.replace('@Url.Action("UserProfile", "Manage")')
+        }, 3000);
+    </script>
+}

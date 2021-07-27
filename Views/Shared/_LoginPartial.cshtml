@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    string testString = User.Identity.GetUserName();
+}
+
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="collapse navbar-collapse">
+            <div class="nav navbar-nav navbar-right">
+                <div class="dropdown" id="dropdown-cont">
+                    <button class="btn dropdown-toggle dropdownMenuButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="glyphicon glyphicon-user"></span> @testString <span class="caret"></span>
+                    </button>
+                    <div id="user-dd-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">@Html.ActionLink("Profile Information", "UserProfile", "Manage", routeValues: null, htmlAttributes: new { @class = "dropdown-item" })</a><br />
+                        <a class="dropdown-item" href="#">@Html.ActionLink("My Campaigns", "MyCampaigns", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "dropdown-item" })</a><br />
+                        <a class="dropdown-item" href="#">@Html.ActionLink("Following Campaigns", "FollowedCampaign", "Follow", routeValues: null, htmlAttributes: new { title = "Manage", @class = "dropdown-item" })</a><br />
+                        <a class="dropdown-item" href=javascript:document.getElementById('logoutForm').submit()>Log off</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li id="navDivide">|</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

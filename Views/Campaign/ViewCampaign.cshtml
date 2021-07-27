@@ -1,0 +1,577 @@
+﻿@model FYPProject.Models.DetailsViewModel
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = Model.CampaignDetails.Title;
+    string testString = User.Identity.GetUserName();
+    string userid = User.Identity.GetUserId();
+}
+
+<head>
+    <style>
+
+    </style>
+</head>
+<body class="view-campaign-page">
+    <section id="view-campaign-container">
+        <!--main content for campaign-->
+        <div id="main-content">
+            <!--campaign title-->
+            <div id="campaign-title-container">
+                <h1><b>@Model.CampaignDetails.Title</b></h1>
+            </div>
+            <!--cover image-->
+            <div id="cover-image-container">
+                <img class="cover-image" src="@Url.Content(Model.CampaignDetails.CoverImage)" alt="Cover Image">
+            </div>
+            <!--organizer details-->
+            @if (@Model.CampaignDetails.Beneficiary != null)
+            {
+                <div id="organizer-container">
+                    <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                    @Model.CampaignDetails.OwnerUsername is organizing this campaign on behalf of @Model.CampaignDetails.Beneficiary
+                </div>
+            }
+            else
+            {
+                <div id="organizer-container">
+                    <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                    @Model.CampaignDetails.OwnerUsername is organizing this campaign
+                </div>
+            }
+            <!--text-area details-->
+            <div id="text-area-content">
+                <hr class="rounded">
+                @Model.CampaignDetails.Body
+            </div>
+            <!--supporting image details-->
+            <div id="supporting-image-content">
+                <div class="support-image-row">
+                    @if (Model.CampaignDetails.MultipleImages != null)
+                    {
+                        var SplitImages = Model.CampaignDetails.MultipleImages.Split(',');
+                        foreach (var item in SplitImages)
+                        {
+                            <div class="support-image-col">
+                                <a class="pop">
+                                    @if (!string.IsNullOrWhiteSpace(@item))
+                                    {
+                                        <img class="support-image" src="@Url.Content(@item)" alt="Snow" style="width:100%">
+                                    }
+                                </a>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+            <!--updates details-->
+            <div id="updates-content">
+                <hr class="rounded">
+                <div id="updates-title-section">
+                    @if (Model.CampaignDetails.updates.Count != 0)
+                    {
+                        <h3 id="update-title">Updates</h3>
+                        <div id="expand-collapse-btn-section">
+                            <button type="button" class="btn btn-primary campaign-button" onClick="expandAll();">Expand All</button>
+                            <button type="button" class="btn btn-primary campaign-button" onClick="collapseAll();">Collapse All</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <h3 id="update-title">Updates</h3>
+                        <div id="expand-collapse-btn-section">
+                        </div>
+                        <div>
+                            @Html.Raw("The Campaign organiser has not posted any updates.")
+                        </div>
+                    }
+                </div>
+                <div class="panel-group" id="accordion">
+                    @{
+                        var totalUpdateAmount = Model.CampaignDetails.updates.Count();
+                        var j = 0;
+                        foreach (var qupdates in Model.CampaignDetails.updates)
+                        {
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading test" style="cursor:pointer;" data-toggle="collapse" href="#collapse@(totalUpdateAmount - j)">
+                                    <h4 class="panel-title">
+                                        <a class="a collapsed" data-toggle="collapse" href="#collapse@(totalUpdateAmount - j)" style="text-decoration:none;">@qupdates.UpdateDate</a>
+                                    </h4>
+                                </div>
+                                <div id="collapse@(totalUpdateAmount - j)" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        @qupdates.Text
+                                    </div>
+                                </div>
+                            </div>
+                            j++;
+                        }
+                    }
+                    @if (userid == Model.CampaignDetails.OwnerId)
+                    {
+                        Html.RenderPartial("../Updates/PostUpdates", new FYPProject.Models.Updates() { CampaignId = Model.CampaignDetails.CampaignId });
+                    }
+                </div>
+            </div>
+            <!--comments details-->
+            <div id="comments-content">
+                <h3 id="update-title">Comments</h3>
+                @{
+                    foreach (var qcomment in Model.CampaignDetails.comments)
+                    {
+                        <hr class="rounded">
+                        <div class="text-container">
+                            <div class="icon-comment-section">
+                                <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                            </div>
+                            <div class="right-text-div">
+                                <p id="@qcomment.CommentId">
+                                    <b>@qcomment.OwnerFullname</b> commented:<br />
+                                    @Html.Raw(@qcomment.Text)
+                                </p>
+                                <hr />
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="row">
+                    <div class="PostComment" style="padding-left:16px;">
+                        @{
+                            if (this.User.Identity.IsAuthenticated)
+                            {
+                                Html.RenderPartial("../Comments/PostComment", new FYPProject.Models.CommentViewModel() { CampaignId = Model.CampaignDetails.CampaignId });
+                            }
+                            else
+                            {
+                                @Html.Raw("Please Log in to leave a comment.");
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <!--report details-->
+            @if (Model.CampaignDetails.Status == "Open")
+            {
+                if (userid != Model.CampaignDetails.OwnerId)
+                {
+                    <div id="report-content">
+                        <hr class="rounded">
+                        <span class="glyphicon glyphicon-flag"></span> <a href="@Url.Action("ReportCampaign", "Reports", new { id = Model.CampaignDetails.CampaignId })">Report campaign</a>
+                    </div>
+                }
+            }
+        </div>
+        <!--Side Navbar-->
+        <div id="scroll-container">
+            <div id="scroll-content">
+                <!--Current donation goal-->
+                <div class="text-container" style="margin-top:-15px;">
+                    <span class="donation-amount">$@Model.CampaignDetails.CurrentDonation</span><span class="current-donation-cont">&nbsp raised of $@Model.CampaignDetails.DonationGoal</span>
+                </div>
+
+                <!--Donation bar-->
+                <div id="donate-bar">
+                    <div class="progress" style="height: 5px;background-color: #a8c3ca;">
+                        @{
+                            double donProgress = (Model.CampaignDetails.CurrentDonation / Convert.ToDouble(Model.CampaignDetails.DonationGoal) * 100);
+                        }
+                        <div class="progress-bar" role="progressbar" style="width: @donProgress%;background-color: #26687a;" aria-valuenow="@donProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <!--Days remaining-->
+                <div class="text-container-days" style="justify-content:center;margin-top:-15px !important">
+                    @{
+                        DateTime endDate = Convert.ToDateTime(Model.CampaignDetails.EndDate);
+                        int test = Convert.ToInt32(((Convert.ToDateTime(Model.CampaignDetails.EndDate) - DateTime.Now).TotalDays));
+                    }
+                    @if (Model.CampaignDetails.Status == "Closed")
+                    {
+                        @Html.Raw("Campaign is closed")
+                    }
+                    else
+                    {
+                        <b>@test</b> @Html.Raw("days remaining")
+                    }
+
+                </div>
+                <div class="text-container" style="justify-content: center;">
+                    @if (Model.CampaignDetails.Status == "Closed")
+                    {
+                        if (this.User.IsInRole("Moderator") || userid == Model.CampaignDetails.OwnerId)
+                        {
+                            if (Model.CampaignDetails.PayoutID != null)
+                            {
+                                <a style="color:green;"><b>Payout has been created!</b></a>
+                            }
+                        }
+                    }
+                </div>
+                <!--campaign statistics-->
+                <div>
+                    <div class="text-container stat-container">
+                        <div class="left-donors-div">@Model.CampaignDetails.Donors</div>
+
+                        @{ 
+                            double currentAmount = Model.CampaignDetails.CurrentDonation;
+                            double goalAmount = Convert.ToDouble(Model.CampaignDetails.DonationGoal);
+                            int percentageDone = Convert.ToInt32((currentAmount / goalAmount) * 100);
+                        }
+
+                        <div class="right-followers-div">@Model.CampaignDetails.Followers</div>
+                    </div>
+                    <div class="text-container" style="margin-top:-13px;">
+                        <div class="left-donors-div">donors</div>
+
+                        <div class="right-followers-div">followers</div>
+                    </div>
+                </div>
+                <!--share and donate buttons-->
+                <div class="sidebar-button-container" style="margin-top:-10px;">
+                    <span id="followBtn">
+                        @{
+                            if (this.User.Identity.IsAuthenticated)
+                            {
+                                Html.RenderPartial("../Follow/FollowCampaign", new FYPProject.Models.FollowViewModel() { CampaignId = Model.CampaignDetails.CampaignId });
+                            }
+                        }
+                    </span>
+                    <span id="unfollowBtn">
+                        @{
+                            if (this.User.Identity.IsAuthenticated)
+                            {
+                                Html.RenderPartial("../Follow/UnfollowCampaign", new FYPProject.Models.FollowViewModel() { CampaignId = Model.CampaignDetails.CampaignId });
+                            }
+                        }
+                    </span>
+                    @if (Model.CampaignDetails.Status == "Open")
+                    {
+                        <a href="@Url.Action("DonateCampaign", "Campaign", new { id = Model.CampaignDetails.CampaignId })" class="btn btn-primary campaign-button sidebar-button">
+                            <div class="btn-container">
+                                <div class="left-btn-div"><span class="glyphicon glyphicon-send btn-icon"></span></div>
+                                <div class="center-btn-div">
+                                    <span>Donate</span>
+                                </div>
+                                <div class="right-btn-div">
+                                </div>
+                            </div>
+                        </a>
+                    }
+                    @if (Model.CampaignDetails.Status == "Closed")
+                    {
+                        if (this.User.IsInRole("Moderator"))
+                        {
+                            if (Model.CampaignDetails.CurrentDonation > 0)
+                            {
+                                Html.RenderPartial("../Campaign/Payout", new FYPProject.Models.CreateCampaignViewModel() { CampaignId = Model.CampaignDetails.CampaignId });
+                            }
+                        }
+                    }
+
+                    <button type="button" class="btn btn-primary campaign-button sidebar-button" data-toggle="modal" data-target="#exampleModal">
+
+                        <div class="btn-container">
+                            <div class="left-btn-div"><span class="glyphicon glyphicon-share btn-icon"></span></div>
+                            <div class="center-btn-div">
+                                <span>Share</span>
+                            </div>
+                            <div class="right-btn-div">
+                            </div>
+
+                        </div>
+                    </button>
+
+                </div>
+                <!--latest donators-->
+                <div id="">
+                    <strong style="padding-left:10px;">Recent Donations</strong>
+                    @{
+                        if (Model.CampaignDetails.donors.Count() > 0)
+                        {
+                            foreach (var qdonors in Model.CampaignDetails.donors.Take(2))
+                            {
+
+                                <hr class="rounded">
+                                <div class="text-container">
+                                    <div class="left-icon-div">
+                                        <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                                    </div>
+                                    <div class="right-text-div">
+                                        <p style="margin-top:7px;"><b>@qdonors.FullName</b> donated <b>$@qdonors.Amount</b></p>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                        else
+                        {
+                            <hr class="rounded">
+                            <div class="text-container">
+                                <div class="left-icon-div">
+                                    <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                                </div>
+                                <div class="right-text-div">
+                                    <p style="margin-top:7px;">No donors yet!</p>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                </div>
+                    <!--see all donations/top donations-->
+                    <div class="text-container">
+                        <div class="left-see-all">
+                            <button type="button" class="btn btn-primary campaign-button bottom-sidebar-button" data-toggle="modal" data-target="#exampleModalLong">See all donations</button>
+                        </div>
+                        <div class="right-see-top">
+                            <button type="button" class="btn btn-primary campaign-button bottom-sidebar-button" data-toggle="modal" data-target="#exampleTopDonation">See top donations</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
+    <!--Modal popup for images -->
+    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <img src="" class="imagepreview" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h2 class="modal-title" id="exampleModalLabel">Help by sharing</h2>
+                    <p>Fundraisers shared on social networks raise up to 5x more</p>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex;">
+                        @{
+                            string campaignIDno = Model.CampaignDetails.CampaignId.ToString();
+                            string normalShareLink = "https%3A%2F%2Fcrowdfundingforthesick.azurewebsites.net%2FCampaign%2FViewCampaign%2F" + campaignIDno;
+
+                            string FBsharelink = "https://www.facebook.com/plugins/share_button.php?href=" + normalShareLink + "&layout=button&size=large&width=77&height=28&appId";
+                            string TwitterShareLink = "https://twitter.com/intent/tweet?lang=en&url=" + normalShareLink;
+                            string WAshareLink = "https://api.whatsapp.com/send?text=" + normalShareLink;
+                        }
+                        
+
+
+                        <div class="share-link-container">
+                            <iframe src=@FBsharelink width="77" height="28" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                            <p>Facebook</p>
+                        </div>
+
+                        <div class="share-link-container">
+                            <a class="shareBTN twitterBTN" href="@TwitterShareLink" target="_blank"><img src="~/images/WebResources/twitter-logo.png" alt="WA" width="15" height="15"> Share</a>
+                            <p>Twitter</p>
+                        </div>
+
+                        <div class="share-link-container">
+                            <a class="shareBTN whatsappBTN" href="@WAshareLink" target="_blank"><img src="~/images/WebResources/wa-logo.png" alt="WA" width="15" height="15"> Share</a>
+                            <p>Whatsapp</p>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h2 class="modal-title" id="exampleModalLabel">All Donations</h2>
+                </div>
+                <div class="modal-body">
+                    @{
+                        if (Model.CampaignDetails.donors.Count > 0)
+                        {
+                            foreach (var qdonors in Model.CampaignDetails.donors)
+                            {
+
+                                <hr class="rounded">
+                                <div class="text-container">
+                                    <div class="left-icon-div">
+                                        <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                                    </div>
+                                    <div class="right-text-div">
+                                        <p style="margin-top:7px;"><b>@qdonors.FullName</b> donated <b>$@qdonors.Amount</b></p>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                        else
+                        {
+                            <hr class="rounded">
+                            <div class="text-container">
+                                <div class="left-icon-div">
+                                    <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                                </div>
+                                <div class="right-text-div">
+                                    <p style="margin-top:7px;">No donors yet!</p>
+                                </div>
+                            </div>
+                        }
+
+                    }
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleTopDonation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h2 class="modal-title" id="exampleModalLabel">Top Donations</h2>
+                </div>
+                <div class="modal-body">
+
+                    @{
+
+
+                        if (Model.CampaignDetails.donors.Count > 0)
+                        {
+                            foreach (var qdonors in Model.CampaignDetails.donors.OrderByDescending(i => i.Amount))
+                            {
+
+                                <hr class="rounded">
+                                <div class="text-container">
+                                    <div class="left-icon-div">
+                                        <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                                    </div>
+                                    <div class="right-text-div">
+                                        <p style="margin-top:7px;"><b>@qdonors.FullName</b> donated <b>$@qdonors.Amount</b></p>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                        else
+                        {
+                            <hr class="rounded">
+                            <div class="text-container">
+                                <div class="left-icon-div">
+                                    <span class="glyphicon glyphicon-user icon-circular user-icon"></span>
+                                </div>
+                                <div class="right-text-div">
+                                    <p style="margin-top:7px;">No donors yet!</p>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            $('.pop').on('click', function () {
+                $('.imagepreview').attr('src', $(this).find('img').attr('src'));
+                $('#imagemodal').modal('show');
+            });
+        });
+
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+
+                var collapseNo = @Model.CampaignDetails.updates.Count().ToString();
+            var collapseIndicator = '#collapse' + collapseNo;
+            $(collapseIndicator).collapse('show');
+
+            $('#followBtn').hide();
+            $('#unfollowBtn').hide();
+
+            $.ajax({
+            type: "POST",
+                url: "/Follow/CheckFollowed",
+                data: { id: @Model.CampaignDetails.CampaignId },
+                async: true,
+                success: function (data) {
+                    if (data.responseText == "TRUE") {
+                        //disables & hide button
+                        $('#followBtn').hide();
+                        $('#followBtn').attr("disabled", true);
+
+                        //enables & show button
+                        $('#unfollowBtn').show();
+                        $('#unfollowBtn').attr("disabled", false);
+                    }
+                    else if (data.responseText == "FALSE") {
+                        //disables & hide button
+                        $('#unfollowBtn').hide();
+                        $('#unfollowBtn').attr("disabled", true);
+
+                        //enables & show button
+                        $('#followBtn').show();
+                        $('#followBtn').attr("disabled", false);
+                    }
+                    else {
+                        //disables & hide button
+                        $('#unfollowBtn').hide();
+                        $('#unfollowBtn').attr("disabled", true);
+
+                        //disables & hide button
+                        $('#followBtn').hide();
+                        $('#followBtn').attr("disabled", true);
+                    }
+                },
+                error: function () {
+                    return "error";
+                }
+            });
+
+            //end of onload
+        });
+
+        function collapseAll() {
+            $('#accordion .panel-collapse').collapse('hide');
+        }
+
+        function expandAll() {
+            $('#accordion .panel-collapse').collapse('show');
+        }
+
+
+
+
+    </script>
+}

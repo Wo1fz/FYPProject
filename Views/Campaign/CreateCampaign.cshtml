@@ -1,0 +1,347 @@
+﻿@model FYPProject.Models.CreateCampaignViewModel
+@{
+    ViewBag.Title = "CreateCampaign";
+}
+
+<h2></h2>
+<head>
+
+    <style>
+        /*INPUT NUMBER NO ARROWS*/
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            font-size: 15px;
+            border: 1px solid #aaaaaa;
+        }
+
+            /* Mark input boxes that gets an error on validation: */
+            input.invalid {
+                background-color: #ffdddd;
+            }
+
+        /* Hide all steps by default: */
+        .tab {
+            display: none;
+        }
+
+
+        /* Make circles that indicate the steps of the form: */
+        .step {
+            height: 3px;
+            width: 100px;
+            background-color: #d1d1d1;
+            border: none;
+            display: inline-block;
+        }
+
+            .step.active {
+                background-color: #296f82;
+            }
+
+            /* Mark the steps that are finished and valid: */
+            .step.finish {
+                background-color: #296f82;
+            }
+
+        .errorMSG {
+            text-align: center;
+            font-weight: normal;
+            font-size: 12px;
+            color: red;
+        }
+
+        .text-danger {
+            list-style-type: none !important;
+        }
+    </style>
+
+
+</head>
+<body class="create-campaign-page">
+    <div class="container">
+        @using (Html.BeginForm("CreateCampaign", "Campaign", FormMethod.Post, new { @class = "form-vertical", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+
+            @Html.HiddenFor(model => model.OwnerId, new { id = "OwnerId" })
+            @Html.HiddenFor(model => model.OwnerUsername, new { id = "OwnerUsername" })
+            @Html.HiddenFor(model => model.StartDate, new { id = "StartDate" })
+            @Html.HiddenFor(model => model.Status, new { id = "Status"})
+
+            <center><h2>Create your Campaign</h2></center>
+            <div class="panel panel-default">
+
+                <form id="regForm">
+                    <label id="step-title" class="panel-title">Step 1 of 3</label>
+                    <div style="text-align:center;margin-top:-10px;">
+                        <span class="step"></span>
+                        <span class="step"></span>
+                        <span class="step"></span>
+                    </div>
+                    <!-- One "tab" for each step in the form: -->
+                    <div class="tab form-cont">
+                        <div class="form-row">
+                            Enter your goal here
+                        </div>
+                        <div class="form-row" id="form-donation-goal">
+                            <label id="currency-label">$<br />SGD</label>
+                            @Html.TextBoxFor(model => model.DonationGoal, new { @class = "requiredTB cust-text", placeholder = "Enter amount", style = "resize:none", @rows = 1, id = "donation-goal", @type = "number", @pattern = @"^[1-9]\d*$" })
+                        </div>
+                        <label title="*Please enter a valid amount!" class="errorMSG" style="display:none;"></label>
+                        <div id="normalTextbox">
+
+                            <div class="form-row form-row-header">
+                                <div class="textbox-header">Campaign Title</div>
+                            </div>
+                            <div class="form-row">
+                                @Html.TextBoxFor(model => model.Title, new { @class = "requiredTB form-selector", style = "resize:none", @rows = 1, @id = "name", @name = "name" })
+
+                            </div>
+                            <label class="errorMSG" style="display:none;"></label>
+                            <div class="form-row form-row-header">
+                                <div class="textbox-header">Duration</div>
+                            </div>
+                            <div class="form-row">
+                                @Html.TextBoxFor(model => model.CampaignDuration, new { @class = "requiredTB form-selector", style = "resize:none", @rows = 1, @pattern = "^[1][4-9]$|^[2-3][0-9]$|^[4][0-5]", @Value = "30", @data_toggle = "popover", @data_placement = "left", @data_trigger = "hover", @data_html = "true", @data_content = "The duration for your campaign. <br/> Please enter only between <b>14 to 45 days</b>", @data_container = "body" })
+                            </div>
+                            <label title="*Please enter a valid duration!(Between 14 to 45 days)" class="errorMSG" style="display:none;"></label>
+                            <div class="form-row form-row-header">
+                                <div class="textbox-header">Postal Code</div>
+                            </div>
+                            <div class="form-row">
+                                @Html.TextBoxFor(model => model.PostalCode, new { @class = "requiredTB form-selector", @id = "postalcode", style = "resize:none", @rows = 1, @pattern = @"^\d{6}$" })
+                            </div>
+                            <label title="*Please enter a valid postal code!(6 digits only)" class="errorMSG" style="display:none;"></label>
+                            <div class="form-row form-row-header">
+                                <div class="textbox-header">Category</div>
+                            </div>
+                            <div class="form-row">
+                                @Html.DropDownListFor(model => model.Category, new SelectList(new[] { "Deceased", "Therapy", "Medical" }), "Select a Category", new { @class = "requiredTB form-selector" })
+                            </div>
+                            <label class="errorMSG" style="display:none;"></label>
+                            <div class="form-row form-row-header">
+                                <div class="textbox-header">Address</div>
+                            </div>
+                            <div class="form-row">
+                                @Html.TextBoxFor(model => model.Address, new { @class = "requiredTB form-selector", style = "resize:none", @rows = 1 })
+                            </div>
+                            <label class="errorMSG" style="display:none;"></label>
+                            <div class="form-row form-row-header">
+                                <div class="textbox-header">Beneficiary's Name</div>
+                            </div>
+                            <div class="form-row">
+                                @Html.TextBoxFor(model => model.Beneficiary, new { @class = "form-selector", style = "resize:none", @rows = 1 })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab  form-cont">
+
+
+                        <div class="form-row">
+                            Upload your cover image here
+                        </div>
+                        <div id="normalTextbox">
+                            <div class="form-row">
+                                <div id="img-box">
+                                    <img id="output" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <input type="file" accept="image/jpeg, image/png" name="CoverImageFile" id="file" onchange="loadFile(event)" style="display: none;" class="requiredTB">
+                                <p><label id="upload-btn" for="file" style="cursor: pointer;">Upload Image</label></p>
+                            </div>
+                            <label title="*Please enter a valid title!(No special letters)" class="errorMSG" style="display:none;"></label>
+                        </div>
+                    </div>
+                    <div class="tab  form-cont">
+
+                        <div class="form-row">
+                            Tell your story
+                        </div>
+                        <div id="normalTextbox">
+                            <div class="form-row">
+                                @Html.TextAreaFor(model => model.Body, new { @id = "textarea-body", @class = "requiredTB form-selector", style = "resize:none", @rows = 1, @placeholder = "Explain the reason why you are in need of monetary assistance..." })
+                            </div>
+                            <label class="errorMSG" style="display:none;"></label>
+                            <div class="form-row">
+                                Upload Supporting Images
+                            </div>
+                            <div class="form-row">
+                                <input type="file" accept="image/jpeg, image/png" name="MultipleImagesFile" id="spfiles" multiple>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align:center;">
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                    </div>
+                    <div class="btn-container">
+                        <div class="left-btn-div"><button type="button" id="prevBtn" class="btn btn-outline-primary cust-camp-btn" onclick="nextPrev(-1)">Return</button></div>
+                        <div class="right-btn-div"><button type="button" id="nextBtn" class="btn btn-outline-primary cust-camp-btn" onclick="nextPrev(1)">Continue</button></div>
+                    </div>
+
+                </form>
+
+            </div>
+
+        }
+    </div>
+</body>
+
+@section Scripts
+{
+
+
+    <script type="text/javascript">
+
+
+
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+
+            $('#spfiles').change(function () {
+                var files = $(this)[0].files;
+                if (files.length > 5) {
+                    alert("You only can choose up to 5 images!");
+                    $('#spfiles').val('');
+                }
+            });
+
+        });
+
+        var loadFile = function (event) {
+            var image = document.getElementById('output');
+            image.src = URL.createObjectURL(event.target.files[0]);
+        };
+
+
+
+
+        var currentTab = 0; // Current tab is set to be the first tab (0)
+        showTab(currentTab); // Display the current tab
+
+        function showTab(n) {
+            // This function will display the specified tab of the form...
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            //... and fix the Previous/Next buttons:
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+
+
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+
+
+
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").innerHTML = "Submit";
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Continue";
+            }
+            //... and run a function that will display the correct step indicator:
+            fixStepIndicator(n)
+            var stepNo = n + 1;
+            $("#step-title").text("Step " + stepNo + " of 3")
+
+        }
+
+        function nextPrev(n) {
+            // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+            if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            // if you have reached the end of the form...
+            if (currentTab >= x.length) {
+                // ... the form gets submitted:
+                document.getElementById("nextBtn").setAttribute("type", "submit");
+                return false;
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+        }
+
+        function validateForm() {
+            // This function deals with validation of the form fields
+            var x, y, f, i, valid = true;
+            x = document.getElementsByClassName("tab");
+            //y = x[currentTab].getElementsByTagName("input");
+            //f = x[currentTab].getElementsByTagName("label");
+            y = x[currentTab].getElementsByClassName("requiredTB");
+            f = x[currentTab].getElementsByClassName("errorMSG");
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+                var x = y[i].title;
+                //var pattern2 = "/" + y[i].pattern + "/";
+                var pattern2 = new RegExp(y[i].pattern);
+                var val = y[i].value;
+                // If a field is empty...
+                if (y[i].value == "") {
+                    // add an "invalid" class to the field:
+                    y[i].className += " invalid";
+
+                    y[i].style.borderColor = "red";
+                    //document.getElementById("demo").innerHTML = x;
+                    f[i].style = "block";
+                    f[i].innerHTML = "*This is a required field!";
+                    f[i].style.display = "block"
+                    // and set the current valid status to false
+                    valid = false;
+
+
+
+                } else if (!pattern2.test(val)) {
+                    //if !val.match(pattern2)
+                    y[i].className += " invalid";
+                    var ss = f[i].title;
+                    //f[i].innerHTML = "pattern wrong leh";
+                    f[i].style.display = "block";
+                    y[i].style.borderColor = "red";
+                    f[i].innerHTML = ss;
+                    valid = false;
+                }
+                else {
+                    f[i].style.display = "none";
+                    f[i].innerHTML = "";
+                    y[i].style.borderColor = "";
+
+                }
+            }
+
+
+
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+            return valid; // return the valid status
+        }
+
+        function fixStepIndicator(n) {
+            // This function removes the "active" class of all steps...
+            var i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class on the current step:
+            x[n].className += " active";
+        }
+    </script>
+
+}

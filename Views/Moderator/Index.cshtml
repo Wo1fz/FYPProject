@@ -1,0 +1,164 @@
+﻿@model IEnumerable<FYPProject.Models.Campaign>
+
+@{
+    ViewBag.Title = "Index";
+}
+<head>
+    <style>
+    </style>
+</head>
+
+<body>
+    <div class="view-header">
+
+        <div class="view-header-caption">
+            <h1>Moderator Control Panel</h1>
+            <div style="text-align:center;">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#low">Low</a></li>
+                    <li><a data-toggle="tab" href="#medium">Medium</a></li>
+                    <li><a data-toggle="tab" href="#high">High</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="low">
+            <div id="view-body">
+                <div class="view-content-container">
+                    @foreach (var item in Model)
+                    {
+                        if (item.Status == "Open")
+                        {
+                            if (item.Reports < 10 && item.Reports > 0)
+                            {
+                                <div class="card cust-card" style="color:black;text-decoration:none">
+                                    <a href="@Url.Action("ViewCampaign", "Campaign", new { id = item.CampaignId })">
+
+                                        <div class="card-img-box">
+                                            <img class="card-img" src="@Url.Content(item.CoverImage)" />
+                                        </div>
+                                    </a>
+                                    <div>
+                                        <div class="donation-header"><h4><b>@Html.DisplayFor(modelItem => item.Title)</b></h4></div>
+                                        <div class="donation-slider">
+                                            <div class="progress" style="height: 5px;background-color: #a8c3ca;margin:10px">
+                                                @{
+                                                    double donProgress = (item.CurrentDonation / Convert.ToDouble(item.DonationGoal) * 100);
+                                                }
+                                                <div class="progress-bar" role="progressbar" style="width: @donProgress%;background-color: #26687a;" aria-valuenow="@donProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <div class="donation-card-stat">
+                                                <b>$@Html.DisplayFor(modelItem => item.CurrentDonation) raised</b> of $@Html.DisplayFor(modelItem => item.DonationGoal) <br />
+                                                @{
+                                                    DateTime endDate = Convert.ToDateTime(item.EndDate);
+                                                    int test = Convert.ToInt32(((Convert.ToDateTime(item.EndDate) - DateTime.Now).TotalDays));
+                                                }
+                                                <b>@test</b> days remaining<br />
+                                                <a href="@Url.Action("ViewReports", "Moderator", new { id = item.CampaignId })" class="btn btn-primary campaign-button sidebar-button">
+                                                    <b style="color:yellow">@item.Reports</b> reports
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="medium">
+            <div id="view-body">
+                <div class="view-content-container">
+                    @foreach (var item in Model)
+                    {
+                        if (item.Status == "Open")
+                        {
+                            if (item.Reports <= 20 && item.Reports >= 10)
+                            {
+                                <div class="card cust-card" style="color:black;text-decoration:none">
+                                    <a href="@Url.Action("ViewCampaign", "Campaign", new { id = item.CampaignId })">
+
+                                        <div class="card-img-box">
+                                            <img class="card-img" src="@Url.Content(item.CoverImage)" />
+                                        </div>
+                                    </a>
+                                    <div>
+                                        <div class="donation-header"><h4><b>@Html.DisplayFor(modelItem => item.Title)</b></h4></div>
+                                        <div class="donation-slider">
+                                            <div class="progress" style="height: 5px;background-color: #a8c3ca;margin:10px">
+                                                @{
+                                                    double donProgress = (item.CurrentDonation / Convert.ToDouble(item.DonationGoal) * 100);
+                                                }
+                                                <div class="progress-bar" role="progressbar" style="width: @donProgress%;background-color: #26687a;" aria-valuenow="@donProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <div class="donation-card-stat">
+                                                <b>$@Html.DisplayFor(modelItem => item.CurrentDonation) raised</b> of $@Html.DisplayFor(modelItem => item.DonationGoal) <br />
+                                                @{
+                                                    DateTime endDate = Convert.ToDateTime(item.EndDate);
+                                                    int test = Convert.ToInt32(((Convert.ToDateTime(item.EndDate) - DateTime.Now).TotalDays));
+                                                }
+                                                <b>@test</b> days remaining<br />
+                                                <a href="@Url.Action("ViewReports", "Moderator", new { id = item.CampaignId })" class="btn btn-primary campaign-button sidebar-button">
+                                                    <b style="color:orange">@item.Reports</b> reports
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="high">
+            <div id="view-body">
+                <div class="view-content-container">
+                    @foreach (var item in Model)
+                    {
+                        if (item.Status == "Open")
+                        {
+                            if (item.Reports > 20)
+                            {
+                                <div class="card cust-card" style="color:black;text-decoration:none">
+                                    <a href="@Url.Action("ViewCampaign", "Campaign", new { id = item.CampaignId })">
+
+                                        <div class="card-img-box">
+                                            <img class="card-img" src="@Url.Content(item.CoverImage)" />
+                                        </div>
+                                    </a>
+                                    <div>
+                                        <div class="donation-header"><h4><b>@Html.DisplayFor(modelItem => item.Title)</b></h4></div>
+                                        <div class="donation-slider">
+                                            <div class="progress" style="height: 5px;background-color: #a8c3ca;margin:10px">
+                                                @{
+                                                    double donProgress = (item.CurrentDonation / Convert.ToDouble(item.DonationGoal) * 100);
+                                                }
+                                                <div class="progress-bar" role="progressbar" style="width: @donProgress%;background-color: #26687a;" aria-valuenow="@donProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <div class="donation-card-stat">
+                                                <b>$@Html.DisplayFor(modelItem => item.CurrentDonation) raised</b> of $@Html.DisplayFor(modelItem => item.DonationGoal) <br />
+                                                @{
+                                                    DateTime endDate = Convert.ToDateTime(item.EndDate);
+                                                    int test = Convert.ToInt32(((Convert.ToDateTime(item.EndDate) - DateTime.Now).TotalDays));
+                                                }
+                                                <b>@test</b> days remaining<br />
+                                                <a href="@Url.Action("ViewReports", "Moderator", new { id = item.CampaignId })" class="btn btn-primary campaign-button sidebar-button">
+                                                    <b style="color:orangered;">@item.Reports</b> reports
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

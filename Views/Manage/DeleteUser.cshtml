@@ -1,0 +1,23 @@
+﻿@model FYPProject.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "DeleteUser";
+}
+
+<h3>Are you sure you want to close your account?</h3>
+<div>
+    <h4>Note: This process is not reversible and all of your information will be lost!</h4>
+    <hr />
+    <h5>Please enter your email address to proceed with the closing of your account.</h5>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("username")
+        @Html.TextBox("confirm") <br />
+        <span style="color:red;">@ViewBag.ErrorMessage</span><br />       
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to Profile", "UserProfile")
+        </div>
+    }
+</div>

@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+
+    </style>
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="50">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div id="nav-cont" class="container-fluid">
+            <div class="navbar-header">
+                <a href='@Url.Action("Index","Home")'>
+                    <img id="img_logo" alt="Logo" src="@Url.Content("~/images/WebResources/cfs-logo-dark.png")" />
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-left">
+                    <li id="navDivide">|</li>
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+
+                    @if (this.User.IsInRole("Admin"))
+                    {
+                        <li id="navDivide">|</li>
+                        <li>@Html.ActionLink("Admin", "Index", "Admin")</li>
+                    }
+                    @if (this.User.IsInRole("Moderator"))
+                    {
+                        <li id="navDivide">|</li>
+                        <li>@Html.ActionLink("Moderator", "Index", "Moderator")</li>
+                    }
+                    <li id="navDivide">|</li>
+                    <li>
+                        <div class="dropdown" id="dropdown-cont2">
+                            <button class="btn dropdown-toggle dropdownMenuButton view-campaign-ddl" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <p>Campaigns<span class="caret"></span></p>
+                            </button>
+                            <div id="user-dd-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a href="@Url.Action("ViewAllCampaign", "Campaign", null)" style="color:black !important;text-decoration:none;">Ongoing Campaigns</a><br />
+                                <a href="@Url.Action("ViewClosedCampaign", "Campaign", null)" style="color:black !important;text-decoration:none;">Closed Campaigns</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li id="navDivide">|</li>
+                    <li>@Html.ActionLink("Contact Us", "Contact", "Home")</li>
+                    <li id="navDivide">|</li>
+
+                </ul>
+                @Html.Partial("_LoginPartial")
+            <ul class="nav navbar-nav navbar-right">
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li>@Html.ActionLink("Start a Campaign", "CreateCampaign", "Campaign", null, new { @class = "btn btn-default btn-lg", id = "cust-nav-btn" })</li>
+                    <li id="navDivide">|</li>
+                }
+            </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="padding">
+            @RenderBody()
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="text-center">
+        <a class="pull-right up-arrow" href="#myPage" data-toggle="tooltip" title="TO TOP">
+            <span class="glyphicon glyphicon-chevron-up"></span>
+        </a>
+        <p>&copy; @DateTime.Now.Year - Crowdfunding For the Sick</p>
+    </footer>
+
+    <script>
+
+        if ($("body").height() > $(window).height()) {
+            $(function () {
+                $(document).scroll(function () {
+                    var $nav = $(".navbar-fixed-top");
+                    $nav.toggleClass('scrolled', $(this).scrollTop() > $nav.height());
+                });
+            });
+        }
+        else {
+            //$('.navbar').css('background', '#2d2d30');
+            //$('body').css('padding-top', '50px');
+        }
+
+        var interval = 1000;
+        setInterval(function () { Update() }, interval);
+
+        function Update() {
+            $.get("/Common/UpdateCampaignStatus", function () {
+            }
+            );
+        }
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+
+
+</body>
+</html>

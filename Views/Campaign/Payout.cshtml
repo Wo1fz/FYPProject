@@ -1,0 +1,23 @@
+﻿@model FYPProject.Models.CreateCampaignViewModel
+@{
+    ViewBag.Title = "Payout";
+}
+
+@using (Html.BeginForm("Payout", "Campaign", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.CampaignId)
+
+    <button type="submit" id="followBtn" class="btn btn-primary campaign-button sidebar-button">
+        <div class="btn-container">
+            <div class="left-btn-div"><span class="glyphicon glyphicon-credit-card btn-icon"></span></div>
+            <div class="center-btn-div">
+                <span>Payout</span>
+            </div>
+            <div class="right-btn-div">
+            </div>
+
+        </div>
+    </button>
+
+}

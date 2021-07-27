@@ -1,0 +1,92 @@
+﻿@model FYPProject.Models.ApplicationUser
+@{
+    ViewBag.Title = "User Profile";
+}
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+
+<hr>
+<div class="container bootstrap snippet">
+    <div class="row">
+        <div class="col-sm-10"><h1>@Model.FullName</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <!--left col-->
+
+            @Html.HiddenFor(model => model.Id)
+            <div class="text-center">
+                <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+            </div></hr><br>
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted">Details <i class="fa fa-dashboard fa-1x"></i></li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong>Username</strong></span> @Model.UserName</li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong>Full Name</strong></span> @Model.FullName</li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong>Email</strong></span> @Model.Email</li>  
+                @if (Model.UserName == HttpContext.Current.User.Identity.Name && Model.StripeToken == null)
+                {
+                    <li class="list-group-item text-right"><span class="pull-left"><strong>Connect Stripe</strong></span> @Html.Partial("../Campaign/ConnectStripe") </li> 
+                }
+                else
+                {
+                    <li class="list-group-item text-right"><span class="pull-left"><strong>Connect Stripe</strong></span> <b style="color:green;">Connected</b></li> 
+                }
+                <li class="list-group-item text-right"><strong style="padding-right:62px;">@Html.ActionLink("Close Account", "DeleteUser", new { id = Model.Id })</strong></li>
+            </ul>
+
+
+        </div><!--/col-3-->
+        <div class="col-sm-9">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#home">Update Information</a></li>
+                <li><a data-toggle="tab" href="#messages">Change Password</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="home">
+                    <hr>
+                    <div class="form-group">
+                        @{
+                            if (this.User.Identity.IsAuthenticated)
+                            {
+                                Html.RenderPartial("../Manage/ChangeInfo", new FYPProject.Models.ChangeInfoViewModel());                               
+                            }
+                        }
+                    </div>
+                    <hr>
+                </div><!--/tab-pane-->
+                <div class="tab-pane" id="messages">
+                    <h2></h2>
+                    <hr>
+                    <div class="form-group">
+                        @{
+                            if (this.User.Identity.IsAuthenticated)
+                            {
+                                Html.RenderPartial("../Manage/ChangePassword", new FYPProject.Models.ChangePasswordViewModel());
+                            }
+                        }
+                    </div>
+                </div><!--/tab-pane-->
+            </div><!--/tab-content-->
+            <p id="msg" class="text-success">@ViewBag.StatusMessage</p>
+        </div><!--/tab-content-->
+
+    </div><!--/col-9-->
+</div><!--/row-->
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $("#msg").fadeOut();
+            }, 2000);
+        });
+
+    </script>
+}

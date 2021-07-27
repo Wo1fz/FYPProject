@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "ConnectSuccess";
+}
+
+@{
+    <hr />
+    <div class="text-success">
+        Stripe successfully connected<br />
+        You will be redirected back in 3 seconds...
+    </div>
+}
+
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+        setTimeout(function ()
+        {
+        window.location.replace('@Url.Action("Index", "Home")')
+        }, 3000);
+    </script>
+}
+

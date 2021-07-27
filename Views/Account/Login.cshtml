@@ -1,0 +1,83 @@
+﻿@using FYPProject.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+
+<head>
+    <style>
+        .container {
+            width: 100%;
+        }
+
+        .panel {
+            min-width: 20%;
+            max-width: 30%;
+            margin: 0 auto;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24);
+        }
+
+
+
+        .form-control {
+            display: inline-block;
+            text-align: left;
+            width: 300px;
+            font-size: 15px;
+            height: 35px;
+            border-radius: 5px;
+            border-color: #e0e0e0;
+            padding-left: 7px;
+            background-color: transparent;
+            color: #777;
+            vertical-align: middle;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <center><h2>Log In</h2></center>
+            <div class="panel panel-default">
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    <div class="form-row form-row-header">
+                        @Html.LabelFor(m => m.UserName, new { @class = "textbox-header" })
+                    </div>
+                    <div class="form-row">
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    </div>
+                    <div class="form-row form-row-header">
+                        @Html.LabelFor(m => m.Password, new { @class = "textbox-header" })
+                    </div>
+                    <div class="form-row">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    </div>
+                    <div class="form-row">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                    <div class="form-row" style="padding:10px;">
+                        <input type="submit" value="Log in" class="btn btn-default cust-camp-btn" />
+                    </div>
+                    <div class="form-row">
+                        @Html.ActionLink("Register as a new user", "Register")
+                    </div>
+                    <div class="form-row">
+                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

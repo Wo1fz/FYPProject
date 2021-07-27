@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "SendEmailView";
+}
+
+@{
+        //parameters to send email
+        string ToEmail, FromOrSenderEmail = "crowdfundingforsick@gmail.com", SubJect, Body, cc, Bcc, EmailAddress;
+
+        //Reading values from form collection (Querystring) and assigning values to parameters
+        ToEmail = "cfshelpticket@gmail.com";
+        EmailAddress = Request["EmailAddress"].ToString();
+        SubJect = Request["EmailSubject"].ToString();
+        Body = Request["EMailBody"].ToString();
+        //Configuring webMail class to send emails
+        WebMail.SmtpServer = "smtp.gmail.com"; //gmail smtp server
+        WebMail.SmtpPort = 25; //gmail port to send emails
+        WebMail.SmtpUseDefaultCredentials = true;
+        WebMail.EnableSsl = true; //sending emails with secure protocol
+        WebMail.UserName = FromOrSenderEmail;//EmailId used to send emails from application
+        WebMail.Password = "CFScrowdfund1@";
+        WebMail.From = FromOrSenderEmail; //email sender email address.
+
+        //Sending email
+        WebMail.Send(to: ToEmail, subject: SubJect, body: "Email Address: "+EmailAddress+Environment.NewLine+Body, isBodyHtml: false);
+        <hr /
+
+        <div class="text-success">
+            Email Sent Successfully.<br />
+            You will be redirected back in 3 seconds...
+        </div>
+
+}
+@section Scripts
+{
+
+    <script type="text/javascript">
+        setTimeout(function ()
+        {
+        window.location.replace('@Url.Action("Index", "Home")')
+        }, 3000);
+    </script>
+}

@@ -1,0 +1,284 @@
+﻿@model FYPProject.Models.Campaign
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Donation";
+    string testString = User.Identity.GetUserName();
+}
+<head>
+    <title>Buy cool new product</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        #donate-container {
+            width: 65%;
+            padding: 20px 0px 30px 0px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #tester {
+            border: 1px solid #f5f5f5;
+            overflow: hidden;
+            border-radius: 5px;
+            background-color: white;
+        }
+
+
+        #left-main-content {
+            float: left;
+            width: 70%;
+            padding: 0;
+        }
+
+        #right-main-content {
+            width: calc(30% - 10px);
+            height: 100%;
+            top: 100px;
+            padding: 0;
+            float: left;
+            border: 1px solid #f5f5f5;
+            border-radius: 5px;
+            background-color: transparent;
+            margin: 5px;
+        }
+
+        .title-container {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        #donation-title-container {
+            padding-left: 20px;
+            padding-bottom: 20px;
+        }
+
+        #donation-input-container {
+            overflow: hidden;
+            display: flex;
+            background-color: #f0f0f0;
+        }
+
+        #currency-label {
+            text-align: center;
+            font-size: 60px;
+            width: 250px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+            padding-left: 20px;
+        }
+
+
+        #donationAmount {
+            border: 0;
+            text-align: right;
+            padding-right: 10px;
+            outline: none;
+            font-size: 60px;
+            font-weight: bold;
+            width: calc(100% - 370px);
+            background-color: transparent;
+        }
+
+        #decimal-label {
+            font-size: 60px;
+            width: 120px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+        }
+
+        #donation-disclaimer-container {
+            width: calc(100% - 40px);
+            margin: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .icon-circular {
+            padding: 10px;
+            border-radius: 50px;
+        }
+
+        .user-icon {
+            background-color: #ccf1e0;
+            color: #008145;
+            transition: background-color 0.4s ease;
+            transition: color 0.4s ease;
+        }
+
+        #user-details-container {
+            margin: 20px;
+            padding: 10px;
+        }
+
+        #comment-textarea {
+            width: 100%;
+            outline: none;
+            border-radius: 5px;
+            height: 100px;
+        }
+
+        #username-section {
+            width: calc(100% - 200px);
+        }
+
+        #checkbox-section {
+            width: 200px;
+            padding-top: 5px;
+        }
+
+        #credit-card-details-container {
+            margin: 20px;
+            padding: 10px;
+        }
+
+        .rounded {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0px 0px 5px 0px;
+            border-color: #dddddd;
+        }
+
+        #cover-image-container {
+            width: 100%;
+            height: auto;
+            padding: 0px 20px 0 20px;
+            text-align: center;
+            position: relative;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+        }
+
+        .cover-image {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .donation-amount {
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        .right-side-text-container {
+            padding: 0px 10px 0px 10px;
+        }
+
+        .donate-btn {
+            height: 50px;
+            font-size: 25px;
+        }
+    </style>
+</head>
+<body>
+    <section id="donate-container">
+        <div id="tester">
+            <div id="left-main-content">
+                <div id="donation-title-container">
+                    <h1><b>Enter your donation amount:</b></h1>
+                </div>
+                <div id="donation-input-container">
+                    <label id="currency-label">$(SGD)</label>
+                    <input id="donationAmount" type="text" placeholder="00" autofocus>
+                    <label id="decimal-label">.00</label>
+                </div>
+                <div id="donation-disclaimer-container">
+                    CFS has a 5% platform fee for organizers. CFS will continue offering its services thanks to donors who has donated.
+                </div>
+                <div id="user-details-container">
+                    <hr class="rounded">
+                    <div style="display:flex;">
+                    </div>
+                    <div style="text-align:center;">
+                        @Html.HiddenFor(m => m.Title, new { id = "title" })
+                        @Html.HiddenFor(m => m.CampaignId, new { id = "CampaignId" })
+                        @Html.HiddenFor(m => m.OwnerId, new { id = "OrganiserId" })
+                        <button id="checkout-button" class="btn btn-primary cust-camp-btn donate-btn">Donate Now</button>
+                    </div>
+
+                </div>
+            </div>
+            <div id="right-main-content">
+
+                <div class="right-side-text-container title-container">
+                    @Model.Title
+                </div>
+                <div id="cover-image-container">
+                    <img class="cover-image" src="@Url.Content(Model.CoverImage)" alt="Cover Image">
+                </div>
+                <div class="right-side-text-container">
+                    <span class="donation-amount">$@Model.CurrentDonation</span><span class="current-donation-cont">&nbsp of $@Model.DonationGoal goal</span>
+                </div>
+                <div class="progress" style="height: 5px;background-color: #a8c3ca;margin:10px">
+                    @{
+                        double donProgress = (Model.CurrentDonation / Convert.ToDouble(Model.DonationGoal) * 100);
+                    }
+                    <div class="progress-bar" role="progressbar" style="width: @donProgress%;background-color: #26687a;" aria-valuenow="@donProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="right-side-text-container" style="text-align:left;">
+                    <hr class="rounded">
+                    <p>Organizer:</p>
+                </div>
+
+                <div class="right-side-text-container ">
+                    <p><span class="glyphicon glyphicon-user icon-circular user-icon"></span>&nbsp<label id="organizer">@Model.OwnerUsername</label></p>
+                    @if (Model.Beneficiary != null)
+                    {
+                        <hr class="rounded">
+                        <p>Affiliation:</p>
+                        <p><b>@Model.Beneficiary</b>(Beneficiary)</p>
+
+                    }
+                </div>
+            </div>
+    </section>
+
+
+</body>
+@section Scripts{
+    <script type="text/javascript">
+        // Create an instance of the Stripe object with your publishable API key
+        var stripe = Stripe('pk_test_51IBDZaCi79uOWe3SxwuatHD96PRoabIrls6fabWYCP9neALVYYKkWxJdY298jaZy6nsZng7D12u9vS5FKLq6AZHl00OQWosXlZ');
+        var checkoutButton = document.getElementById('checkout-button');
+
+        checkoutButton.addEventListener('click', function () {
+            var DonationAmount = document.getElementById("donationAmount").value;
+            var Title = document.getElementById("title").value;
+            var CampaignId = document.getElementById("CampaignId").value;
+            var OrganiserId = document.getElementById("OrganiserId").value;
+            // Create a new Checkout Session using the server-side endpoint you
+            // created in step 3.
+            fetch('/Campaign/CreateCheckoutSession', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    DonationAmount: DonationAmount,
+                    Title: Title,
+                    Campaignid: CampaignId,
+                    OrganiserId: OrganiserId
+                }),
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (session) {
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                })
+                .then(function (result) {
+                    // If `redirectToCheckout` fails due to a browser or network
+                    // error, you should display the localized error message to your
+                    // customer using `error.message`.
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+}

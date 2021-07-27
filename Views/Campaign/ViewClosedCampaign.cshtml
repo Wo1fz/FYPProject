@@ -1,0 +1,83 @@
+﻿@model List<FYPProject.Models.Campaign>
+@{
+    ViewBag.Title = "ViewAllCampaign";
+}
+
+
+<!-- Load Font Awesome Icon Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<head>
+    <style>
+    </style>
+</head>
+<body class="view-all-campaign-page">
+    <div class="view-header">
+        <div class="view-header-caption">
+            <h1>Browse Closed Campaigns</h1>
+            <h3>People around the world are raising money for what they are care about.</h3>
+            @using (Html.BeginForm("ViewAllCampaign", "Campaign", FormMethod.Get))
+            {
+                <span class="cust-search-bar">
+                    @Html.TextBox("search")
+                </span>
+                @Html.DropDownList("filter", new SelectList(new[] { "Deceased", "Therapy", "Medical" }), "All Category", new { id = "pagesizelist", @class = "cust-dropdownlist" })
+                <input type="submit" value="Search" class="btn btn-primary campaign-button" />
+            }
+        </div>
+    </div>
+    <div id="view-body">
+        <div class="view-content-container">
+            @foreach (var item in Model)
+            {
+                if (item.Status == "Closed")
+                {
+                    <a href="@Url.Action("ViewCampaign", "Campaign", new { id = item.CampaignId })" class="card cust-card" style="color:black;text-decoration:none">
+
+                        <div class="card-img-box">
+                            <img class="card-img" src="@Url.Content(item.CoverImage)" />
+                        </div>
+                        <div>
+                            <div class="donation-header"><h4><b>@Html.DisplayFor(modelItem => item.Title)</b></h4></div>
+                            <div class="donation-text">@Html.DisplayFor(modelItem => item.Body)</div>
+                            <div class="donation-slider">
+                                <div class="progress" style="height: 5px;background-color: #a8c3ca;margin:10px">
+                                    @{
+                                        double donProgress = (item.CurrentDonation / Convert.ToDouble(item.DonationGoal) * 100);
+                                    }
+                                    <div class="progress-bar" role="progressbar" style="width: @donProgress%;background-color: #26687a;" aria-valuenow="@donProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="donation-card-stat">
+                                    <b>$@Html.DisplayFor(modelItem => item.CurrentDonation) raised</b> of $@Html.DisplayFor(modelItem => item.DonationGoal) <br />
+                                    @{
+                                        DateTime endDate = Convert.ToDateTime(item.EndDate);
+                                        int test = Convert.ToInt32(((Convert.ToDateTime(item.EndDate) - DateTime.Now).TotalDays));
+                                    }
+                                    @if (test > 0)
+                                    {
+                                        <b>@test</b>@Html.Raw("days remaining");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("Campaign has ended");
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+
+            }
+        </div>
+
+    </div>
+
+
+</body>
+
+
+@section Scripts{
+    <script type="text/javascript">
+
+    </script>
+}
